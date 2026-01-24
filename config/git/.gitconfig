@@ -1,14 +1,11 @@
 [user]
-	name = Your Name
-	email = you@example.com
+	name = Lewis Gorman-Neale
+	email = 107112881+lewisgormanneale@users.noreply.github.com
 
 [core]
 	editor = nvim
 	pager = delta
 	excludesfile = ~/.config/git/.gitignore
-
-[includeIf "gitdir:~/work/"]
-	path = ~/.config/git/work.gitconfig
 
 [delta]
 	navigate = true

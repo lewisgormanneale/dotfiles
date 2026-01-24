@@ -1,5 +1,17 @@
+# Zsh plugin manager (antidote) configuration
+# Each plugin enhances your shell experience with features like completion, suggestions, and highlighting
+
+# Tab completion - Provides improved command and argument completion with better descriptions
 zsh-users/zsh-completions
+
+# Auto suggestions - Shows command suggestions as you type (like Fish shell), with history-based predictions
 zsh-users/zsh-autosuggestions
+
+# Syntax highlighting - Highlights valid/invalid commands and syntax as you type for better feedback
 zdharma-continuum/fast-syntax-highlighting
+
+# Fuzzy tab completion - Integrates fzf with tab completion for interactive selection through options
 Aloxaf/fzf-tab
+
+# Auto pair - Automatically closes brackets, quotes, and parentheses as you type (like vim/editor behavior)
 hlissner/zsh-autopair
