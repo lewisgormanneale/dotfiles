@@ -5,7 +5,7 @@ Modern terminal + Neovim setup focused on speed and repeatability. macOS-only by
 ## Quickstart (macOS)
 
 ```sh
-git clone https://github.com/yourname/dotfiles ~/.dotfiles
+git clone https://github.com/lewisgormanneale/dotfiles ~/.dotfiles
 cd ~/.dotfiles
 make bootstrap   # installs Homebrew + packages + links + mac defaults + fonts
 ```
