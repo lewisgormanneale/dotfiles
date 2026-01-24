@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+install_homebrew() {
+  if command -v brew >/dev/null 2>&1; then
+    echo "Homebrew already installed."
+    return
+  fi
+
+  echo "Installing Homebrew for macOS..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>"$HOME/.zprofile"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+brew_bundle() {
+  if [[ ! -f "Brewfile" ]]; then
+    echo "Brewfile not found; skipping brew bundle."
+    return
+  fi
+  echo "Running brew bundle..."
+  brew bundle --file=Brewfile
+}
+
+main() {
+  install_homebrew
+  brew_bundle
+}
+
+main "$@"

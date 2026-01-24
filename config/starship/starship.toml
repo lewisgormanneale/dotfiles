@@ -1,0 +1,62 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+add_newline = false
+
+[palette]
+mocha-text = "#cdd6f4"
+mocha-subtext = "#a6adc8"
+mocha-surface = "#45475a"
+mocha-sky = "#89dceb"
+mocha-pink = "#f5c2e7"
+mocha-green = "#a6e3a1"
+mocha-yellow = "#f9e2af"
+mocha-red = "#f38ba8"
+
+[format]
+format = """$directory$git_branch$git_status$python$nodejs$rust$golang$cmd_duration$time $line_break$character"""
+
+[character]
+success_symbol = "[❯](mocha-green)"
+error_symbol = "[❯](mocha-red)"
+vicmd_symbol = "[❮](mocha-sky)"
+
+[directory]
+style = "bold mocha-pink"
+truncation_length = 4
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = " "
+style = "mocha-yellow"
+
+[git_status]
+style = "mocha-red"
+staged = "[+](mocha-green)"
+modified = "[!](mocha-yellow)"
+untracked = "[?](mocha-pink)"
+deleted = "[✖](mocha-red)"
+
+[cmd_duration]
+min_time = 1200
+format = "[$duration]($style) "
+style = "mocha-subtext"
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "mocha-subtext"
+
+[python]
+symbol = " "
+style = "mocha-yellow"
+
+[nodejs]
+symbol = " "
+style = "mocha-green"
+
+[rust]
+symbol = " "
+style = "mocha-red"
+
+[golang]
+symbol = " "
+style = "mocha-sky"

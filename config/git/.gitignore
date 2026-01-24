@@ -1,0 +1,15 @@
+# Compiled
+*.o
+*.pyc
+*.class
+
+# Editors
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+node_modules/
+dist/
+build/
+.env

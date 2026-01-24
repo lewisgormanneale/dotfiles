@@ -1,0 +1,20 @@
+Catppuccin Mocha (hex):
+
+- Base: `#1e1e2e`
+- Surface0: `#313244`
+- Surface1: `#45475a`
+- Overlay0: `#6c7086`
+- Text: `#cdd6f4`
+- Subtext: `#a6adc8`
+- Blue: `#89b4fa`
+- Lavender: `#b4befe`
+- Sapphire: `#74c7ec`
+- Sky: `#89dceb`
+- Teal: `#94e2d5`
+- Green: `#a6e3a1`
+- Yellow: `#f9e2af`
+- Peach: `#fab387`
+- Maroon: `#eba0ac`
+- Red: `#f38ba8`
+- Pink: `#f5c2e7`
+- Mauve: `#cba6f7`

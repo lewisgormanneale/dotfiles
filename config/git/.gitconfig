@@ -1,0 +1,42 @@
+[user]
+	name = Your Name
+	email = you@example.com
+
+[core]
+	editor = nvim
+	pager = delta
+	excludesfile = ~/.config/git/.gitignore
+
+[includeIf "gitdir:~/work/"]
+	path = ~/.config/git/work.gitconfig
+
+[delta]
+	navigate = true
+	syntax-theme = Catppuccin-Mocha
+	light = false
+	whitespace-error-style = 22 reverse
+
+[delta "Catppuccin-Mocha"]
+	plus-style = syntax "#a6e3a1"
+	minus-style = syntax "#f38ba8"
+	minus-emph-style = syntax "#eba0ac"
+	plus-emph-style = syntax "#94e2d5"
+	file-style = bold "#89b4fa"
+	hunk-header-style = bold "#cdd6f4"
+	line-numbers = true
+	syntax-theme = OneHalfDark
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	tool = nvimdiff
+
+[pull]
+	rebase = false
+
+[color]
+	ui = auto
+
+[init]
+	defaultBranch = main
