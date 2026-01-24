@@ -1,3 +1,7 @@
+# Custom taps for yabai and sketchybar
+tap "koekeishiya/formulae"
+tap "FelixKratz/formulae"
+
 # Shell & core utilities
 brew "zsh"                # shell (brew-managed, newer than system)
 brew "coreutils"          # GNU userland tools
@@ -21,6 +25,11 @@ brew "fd"                 # modern find (fzf default)
 brew "fzf"                # fuzzy finder + keybinds
 brew "bat"                # cat with syntax highlighting
 brew "tmux"               # terminal multiplexer
+
+# macOS window management & bar
+brew "yabai"              # tiling window manager
+brew "sketchybar"         # macOS custom menu bar
+brew "jq"                 # needed for sketchybar scripts
 
 # Git & collaboration
 brew "git"                # version control

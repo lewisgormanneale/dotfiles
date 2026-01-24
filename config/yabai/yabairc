@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# yabai configuration
+
+# Layout: bsp (binary space partitioning) or float
+yabai -m config layout bsp
+
+# Padding and gaps
+yabai -m config top_padding 10
+yabai -m config bottom_padding 10
+yabai -m config left_padding 10
+yabai -m config right_padding 10
+yabai -m config window_gap 10
+
+# Mouse settings
+yabai -m config mouse_modifier alt
+yabai -m config mouse_action1 move
+yabai -m config mouse_action2 resize
+yabai -m config mouse_drop_action swap
+
+# Focus follows mouse (optional)
+# yabai -m config focus_follows_mouse autofocus
+
+# Window opacity
+yabai -m config window_opacity on
+yabai -m config active_window_opacity 1.0
+yabai -m config normal_window_opacity 0.90
+
+# New window spawns to the right or bottom
+yabai -m config window_placement second_child
+
+# Signals for integration with sketchybar
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+
+# Rules for specific apps (float instead of tile)
+yabai -m rule --add app="System Preferences" manage=off
+yabai -m rule --add app="Finder" manage=off
+yabai -m rule --add app="1Password 7" manage=off
+
+echo "yabai configuration loaded"

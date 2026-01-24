@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DOTROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+make_scripts_executable() {
+  echo "Making scripts executable..."
+  chmod +x "$DOTROOT"/scripts/* || true
+  chmod +x "$DOTROOT"/macos/*.sh || true
+}
+
 install_homebrew() {
   if command -v brew >/dev/null 2>&1; then
     echo "Homebrew already installed."
@@ -13,6 +21,12 @@ install_homebrew() {
   eval "$(/opt/homebrew/bin/brew shellenv)"
 }
 
+add_taps() {
+  echo "Adding Homebrew taps..."
+  brew tap koekeishiya/formulae || true
+  brew tap FelixKratz/formulae || true
+}
+
 brew_bundle() {
   if [[ ! -f "Brewfile" ]]; then
     echo "Brewfile not found; skipping brew bundle."
@@ -23,7 +37,9 @@ brew_bundle() {
 }
 
 main() {
+  make_scripts_executable
   install_homebrew
+  add_taps
   brew_bundle
 }
 

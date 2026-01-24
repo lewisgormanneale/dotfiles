@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# sketchybar configuration
+
+# Colors (adjust to match your theme)
+COLOR_BLACK=0xff1e1e2e
+COLOR_WHITE=0xffcdd6f4
+COLOR_RED=0xffa6e3a1
+COLOR_GREEN=0xffa6e3a1
+COLOR_BLUE=0xff89b4fa
+COLOR_GRAY=0xff6c7086
+
+# Bar settings
+sketchybar --bar \
+  position=top \
+  height=30 \
+  color=$COLOR_BLACK \
+  padding_left=10 \
+  padding_right=10 \
+  blur_radius=20 \
+  corner_radius=0
+
+# Default item settings
+sketchybar --default \
+  icon.font="JetBrains Mono:Regular:12" \
+  icon.color=$COLOR_BLUE \
+  label.font="JetBrains Mono:Regular:12" \
+  label.color=$COLOR_WHITE \
+  background.color=$COLOR_GRAY \
+  background.corner_radius=6 \
+  background.height=24 \
+  padding_left=8 \
+  padding_right=8
+
+# Left side items
+sketchybar -m --add item space_indicator left \
+  --set space_indicator script="echo \"Spaces\"" \
+  label.color=$COLOR_WHITE
+
+# Center items (window title)
+sketchybar -m --add item window_title center \
+  --set window_title script="echo 'Neovim'" \
+  label.color=$COLOR_WHITE \
+  background.drawing=off
+
+# Right side items
+sketchybar -m --add item battery right \
+  --set battery script="pmset -g batt | grep -o '[0-9]*%'" \
+  label.color=$COLOR_RED
+
+sketchybar -m --add item datetime right \
+  --set datetime script="date '+%H:%M'" \
+  label.color=$COLOR_BLUE
+
+# Subscribe to window focus events
+sketchybar -m --subscribe window_title window_focus
+
+# Update regularly
+sketchybar -m --update
+
+echo "sketchybar configuration loaded"
