@@ -1,0 +1,66 @@
+# Aerospace configuration
+
+# Start Aerospace automatically
+start-at-login = true
+
+# Gaps between windows
+gaps = { inner = 10, outer = 12, left = 12, bottom = 12, top = 12 }
+
+# Layout engine
+layout-direction = "horizontal"
+
+# Keybindings reference:
+# mod1 = Cmd
+# mod2 = Alt
+# mod3 = Ctrl
+# mod4 = Shift
+
+[[on-window-detected]]
+# Float certain applications
+if.app-name-regex-substring = "System Preferences|System Settings|Finder|1Password|Slack|Messages|Mail|Photos"
+run = "layout floating"
+
+[mode.main.binding]
+# Workspace navigation with Alt+number
+alt-1 = "workspace 1"
+alt-2 = "workspace 2"
+alt-3 = "workspace 3"
+alt-4 = "workspace 4"
+alt-5 = "workspace 5"
+alt-6 = "workspace 6"
+alt-7 = "workspace 7"
+alt-8 = "workspace 8"
+alt-9 = "workspace 9"
+
+# Move window to workspace with Shift+Alt+number
+shift-alt-1 = "move-node-to-workspace 1"
+shift-alt-2 = "move-node-to-workspace 2"
+shift-alt-3 = "move-node-to-workspace 3"
+shift-alt-4 = "move-node-to-workspace 4"
+shift-alt-5 = "move-node-to-workspace 5"
+shift-alt-6 = "move-node-to-workspace 6"
+shift-alt-7 = "move-node-to-workspace 7"
+shift-alt-8 = "move-node-to-workspace 8"
+shift-alt-9 = "move-node-to-workspace 9"
+
+# Window navigation
+alt-h = "focus left"
+alt-j = "focus down"
+alt-k = "focus up"
+alt-l = "focus right"
+
+# Window resizing
+alt-shift-h = "resize left 50"
+alt-shift-j = "resize down 50"
+alt-shift-k = "resize up 50"
+alt-shift-l = "resize right 50"
+
+# Layout switching
+alt-r = "layout rows"
+alt-c = "layout columns"
+
+# Toggle floating
+alt-space = "layout floating"
+
+# Reload config
+alt-shift-semicolon = "reload-config"

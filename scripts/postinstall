@@ -17,23 +17,32 @@ run_macos_defaults() {
   fi
 }
 
+setup_sketchybar() {
+  local sketchybar_script="$DOTROOT/scripts/setup-sketchybar"
+  if is_macos && [[ -x "$sketchybar_script" ]]; then
+    echo ""
+    echo "=== Setting up sketchybar ==="
+    "$sketchybar_script"
+  fi
+}
+
 set_login_shell() {
   local zsh_path
   zsh_path="$(command -v zsh || true)"
-  
+
   if [[ -z "$zsh_path" ]]; then
     return
   fi
-  
+
   # Get current login shell using dscl (macOS)
   local current_shell
   current_shell=$(dscl . -read /Users/"$USER" UserShell 2>/dev/null | awk '{print $2}' || echo "")
-  
+
   if [[ "$current_shell" == "$zsh_path" ]]; then
     echo "Login shell is already set to $zsh_path"
     return
   fi
-  
+
   echo "Setting login shell to $zsh_path"
   # Ensure the shell is in /etc/shells (required on macOS for chsh)
   if ! grep -q "^${zsh_path}$" /etc/shells; then
@@ -46,6 +55,7 @@ set_login_shell() {
 main() {
   run_macos_defaults
   set_login_shell
+  setup_sketchybar
 }
 
 main "$@"

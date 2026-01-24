@@ -1,5 +1,4 @@
-# Custom taps for yabai and sketchybar
-tap "koekeishiya/formulae"
+# Custom taps for sketchybar
 tap "FelixKratz/formulae"
 
 # Shell & core utilities
@@ -27,9 +26,9 @@ brew "bat"                # cat with syntax highlighting
 brew "tmux"               # terminal multiplexer
 
 # macOS window management & bar
-brew "yabai"              # tiling window manager
+cask "nikitabobko/tap/aerospace" # tiling window manager
 brew "sketchybar"         # macOS custom menu bar
-brew "jq"                 # needed for sketchybar scripts
+
 
 # Git & collaboration
 brew "git"                # version control
@@ -49,8 +48,10 @@ brew "stylua"             # Lua formatter
 # Languages & build tooling
 brew "node"               # JS runtime for tooling
 brew "python@3.12"        # Python runtime
+brew "lua"                # scripting language for Neovim and sketchybar
 brew "cmake"              # native builds (treesitter deps)
 brew "pkg-config"         # build helper for deps
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font" # primary dev font with glyphs
+cask "font-hack-nerd-font"       # secondary dev font with glyphs, used in sketchybar

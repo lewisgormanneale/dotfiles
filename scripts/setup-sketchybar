@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# sketchybar post-installation setup
+# Installs dependencies, configures service, and manages fonts
+
+SKETCHYBAR_DEPS=(
+  "lua"
+)
+
+SKETCHYBAR_FONTS=(
+  "font-jetbrains-mono-nerd-font"
+)
+
+install_dependencies() {
+  echo "Installing sketchybar dependencies..."
+
+  for dep in "${SKETCHYBAR_DEPS[@]}"; do
+    if ! brew list "$dep" &> /dev/null; then
+      echo "Installing $dep..."
+      brew install "$dep"
+    else
+      echo "✓ $dep already installed"
+    fi
+  done
+}
+
+install_fonts() {
+  echo "Installing recommended fonts for sketchybar..."
+
+  for font in "${SKETCHYBAR_FONTS[@]}"; do
+    if ! brew list "$font" &> /dev/null; then
+      echo "Installing $font..."
+      brew install "$font"
+    else
+      echo "✓ $font already installed"
+    fi
+  done
+}
+
+start_service() {
+  if command -v brew &> /dev/null; then
+    echo "Starting sketchybar service..."
+    brew services start sketchybar || true
+    echo "✓ sketchybar service started (via brew services)"
+  fi
+}
+
+validate_config() {
+  local config_file="$HOME/.config/sketchybar/sketchybarrc"
+
+  if [[ ! -f "$config_file" ]]; then
+    echo "⚠️  Config file not found at $config_file"
+    echo "   Please ensure config is linked: make link"
+    return 1
+  fi
+
+  echo "✓ sketchybar config found at $config_file"
+}
+
+main() {
+  echo "Setting up sketchybar..."
+  echo ""
+
+  # Ensure sketchybar is installed
+  if ! command -v sketchybar &> /dev/null; then
+    echo "✗ sketchybar not found. Install with: brew install FelixKratz/formulae/sketchybar"
+    return 1
+  fi
+
+  install_dependencies
+  install_fonts
+  validate_config
+  start_service
+
+  echo ""
+  echo "ℹ️  To update sketchybar config after making changes:"
+  echo "   brew services restart sketchybar"
+  echo ""
+}
+
+main "$@"
