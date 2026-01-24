@@ -26,7 +26,7 @@ brew "tmux"               # terminal multiplexer
 brew "git"                # version control
 brew "lazygit"            # TUI git helper
 brew "gh"                 # GitHub CLI
-brew "github-copilot-cli" # GitHub Copilot CLI
+cask "copilot-cli"        # GitHub Copilot CLI
 brew "stow"               # symlink manager if needed
 
 # Terminal
