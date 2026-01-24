@@ -22,6 +22,11 @@ set_login_shell() {
   zsh_path="$(command -v zsh || true)"
   if [[ -n "$zsh_path" ]] && [[ "$SHELL" != "$zsh_path" ]]; then
     echo "Setting login shell to $zsh_path"
+    # Ensure the shell is in /etc/shells (required on macOS for chsh)
+    if ! grep -q "^${zsh_path}$" /etc/shells; then
+      echo "Adding $zsh_path to /etc/shells"
+      echo "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+    fi
     chsh -s "$zsh_path"
   fi
 }

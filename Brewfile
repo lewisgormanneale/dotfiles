@@ -1,8 +1,3 @@
-tap "homebrew/bundle"     # enables `brew bundle`
-tap "homebrew/cask"       # macOS apps via casks
-tap "homebrew/cask-fonts" # font casks (Nerd Fonts)
-tap "homebrew/core"       # main formulae
-
 # Shell & core utilities
 brew "zsh"                # shell (brew-managed, newer than system)
 brew "coreutils"          # GNU userland tools
@@ -34,9 +29,9 @@ brew "gh"                 # GitHub CLI
 brew "stow"               # symlink manager if needed
 
 # Terminal
-brew "ghostty"            # terminal emulator
+cask "ghostty"
 
-# Neovim stack
+# Neovim
 brew "neovim"             # editor
 brew "lua-language-server" # Lua LSP for Neovim config
 brew "stylua"             # Lua formatter
@@ -47,5 +42,5 @@ brew "python@3.12"        # Python runtime
 brew "cmake"              # native builds (treesitter deps)
 brew "pkg-config"         # build helper for deps
 
+# Fonts
 cask "font-jetbrains-mono-nerd-font" # primary dev font with glyphs
-cask "font-sf-mono-nerd-font"        # alt dev font with glyphs
