@@ -19,17 +19,22 @@ defaults write com.apple.dock show-recents -bool false
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock orientation -string "bottom"
 
-echo "• System animation and visual effects (aerospace compatibility)"
+echo "• Aerospace settings"
 # Disable window animations for better tiling responsiveness
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.1
 # Disable dock animations
 defaults write com.apple.dock autohide-time-modifier -float 0.5
+# Mission Control: Group windows by application (fixes window sizing issues: https://nikitabobko.github.io/AeroSpace/guide#a-note-on-mission-control)
+defaults write com.apple.dock expose-group-apps -bool true
+# Disable 'Displays have separate Spaces' for better multi-monitor stability (see: https://nikitabobko.github.io/AeroSpace/guide#a-note-on-displays-have-separate-spaces)
+defaults write com.apple.spaces spans-displays -bool true
 
 echo "• Hide macOS menu bar (for sketchybar)"
 # Automatically hide and show the menu bar (set to Always)
 defaults write NSGlobalDomain AppleMenuBarVisible -bool false
 
-echo "Restarting Dock to apply settings"
+echo "Restarting Dock and SystemUIServer to apply settings"
 killall Dock 2>/dev/null || true
+killall SystemUIServer 2>/dev/null || true
 
-echo "Done. Some changes may require a logout/restart."
+echo "Done. Some changes may require a logout/restart e.g. 'Displays have separate spaces'."
