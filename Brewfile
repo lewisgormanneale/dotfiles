@@ -29,6 +29,7 @@ brew "tmux"               # terminal multiplexer
 # macOS window management & bar
 cask "nikitabobko/tap/aerospace" # tiling window manager
 brew "sketchybar"         # macOS custom menu bar
+brew "borders"         # macOS custom menu bar
 
 
 # Git & collaboration
