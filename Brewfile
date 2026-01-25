@@ -17,6 +17,7 @@ brew "zoxide"             # smart cd
 brew "antidote"           # zsh plugin manager
 brew "starship"           # prompt engine
 brew "atuin"              # synced shell history
+brew "fastfetch"          # system info tool
 
 # Search, fuzzy, navigation
 brew "ripgrep"            # fast code search (rg)
