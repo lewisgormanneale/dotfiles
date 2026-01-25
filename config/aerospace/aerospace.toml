@@ -2,7 +2,10 @@
 # Documentation: https://nikitabobko.github.io/AeroSpace/guide
 
 config-version = 2
-after-startup-command = []
+after-login-command = []
+after-startup-command = [
+  'exec-and-forget sketchybar --trigger aerospace_workspace_change'
+]
 start-at-login = true
 
 enable-normalization-flatten-containers = true
@@ -15,6 +18,13 @@ default-root-container-orientation = 'horizontal'
 
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+# Trigger sketchybar on workspace changes
+exec-on-workspace-change = [
+  '/bin/bash',
+  '-c',
+  'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+
 automatically-unhide-macos-hidden-apps = true
 
 [key-mapping]
@@ -22,7 +32,7 @@ automatically-unhide-macos-hidden-apps = true
 
 [gaps]
     # Reserve space for sketchybar at the top
-    outer.top = 35
+    outer.top = 28
     outer.bottom = 8
     outer.left = 8
     outer.right = 8
@@ -87,6 +97,7 @@ automatically-unhide-macos-hidden-apps = true
     alt-shift-j = ['join-with down', 'mode main']
     alt-shift-k = ['join-with up', 'mode main']
     alt-shift-l = ['join-with right', 'mode main']
+
 
 
 # Application-specific settings
