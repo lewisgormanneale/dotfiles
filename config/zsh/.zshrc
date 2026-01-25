@@ -10,7 +10,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
 # Homebrew paths (macOS default)
 if [[ -d /opt/homebrew/bin ]]; then
-  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  [[ "$PATH" =~ ^/opt/homebrew/bin ]] || export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
   export FPATH="/opt/homebrew/share/zsh/site-functions:${FPATH:-}"
 fi
 

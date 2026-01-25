@@ -33,6 +33,10 @@ echo "• Hide macOS menu bar (for sketchybar)"
 # Automatically hide and show the menu bar (set to Always)
 defaults write NSGlobalDomain AppleMenuBarVisible -bool false
 
+echo "• Change Screenshot Location"„
+mkdir -p ~/Pictures/Screenshots
+defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
+
 echo "Restarting Dock and SystemUIServer to apply settings"
 killall Dock 2>/dev/null || true
 killall SystemUIServer 2>/dev/null || true
