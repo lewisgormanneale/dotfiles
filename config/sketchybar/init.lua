@@ -1,6 +1,9 @@
 -- Require the sketchybar module
 sbar = require("sketchybar")
 
+-- Start JankyBorders for window focus borders (Catppuccin Pink)
+os.execute("pkill borders 2>/dev/null; borders active_color=0xfff5c2e7 inactive_color=0x00000000 width=6.0 &")
+
 -- Set the bar name, if you are using another bar instance than sketchybar
 -- sbar.set_bar_name("bottom_bar")
 

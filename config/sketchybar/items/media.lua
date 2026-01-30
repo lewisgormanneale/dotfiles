@@ -2,11 +2,11 @@ local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
-local whitelist = { 
+local whitelist = {
   ["Spotify"] = true,
   ["Music"] = true,
   ["com.apple.Music"] = true,
-  ["com.spotify.client"] = true 
+  ["com.spotify.client"] = true
 }
 
 -- Artwork cache path
@@ -109,22 +109,22 @@ local function update_media()
       end
       return
     end
-    
+
     -- result is already a parsed Lua table
     local app = result.bundleIdentifier
     local playing = result.playing
     local title = result.title
     local artist = result.artist
     local artworkData = result.artworkData
-    
+
     -- Only update if something actually changed
     local changed = (title ~= last_title) or (playing ~= last_playing)
-    
+
     if app and whitelist[app] then
       if changed then
         last_title = title
         last_playing = playing
-        
+
         -- Save artwork if available and changed
         if artworkData and artworkData ~= last_artwork then
           last_artwork = artworkData
@@ -133,7 +133,7 @@ local function update_media()
             media_cover:set({ background = { image = artwork_path } })
           end)
         end
-        
+
         media_artist:set({ drawing = playing, label = artist or "" })
         media_title:set({ drawing = playing, label = title or "" })
         media_cover:set({ drawing = playing })
