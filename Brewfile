@@ -58,8 +58,8 @@ brew "stylua"             # Lua formatter
 
 
 # Fonts
-cask "font-jetbrains-mono-nerd-font" # primary dev font with glyphs
-cask "font-hack-nerd-font"       # secondary dev font with glyphs, used in sketchybar
-cask "font-sf-mono"             # SF Mono for sketchybar
-cask "font-sf-pro"              # SF Pro for sketchybar text
-cask "sf-symbols"               # SF Symbols for sketchybar icons
+cask "font-iosevka-nerd-font"        # Iosevka with Nerd Font glyphs
+cask "font-iosevka-term-nerd-font"   # Iosevka Term (fixed-width for terminals)
+cask "font-sf-mono"                  # SF Mono for sketchybar
+cask "font-sf-pro"                   # SF Pro for sketchybar text
+cask "sf-symbols"                    # SF Symbols for sketchybar icons
