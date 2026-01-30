@@ -2,81 +2,89 @@
 set -euo pipefail
 
 # sketchybar post-installation setup
-# Installs dependencies, configures service, and manages fonts
+# Installs SbarLua, downloads sketchybar-app-font, and compiles helper binaries
 
-SKETCHYBAR_DEPS=(
-  "lua"
-)
+DOTROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_DIR="$HOME/.config/sketchybar"
 
-SKETCHYBAR_FONTS=(
-  "font-jetbrains-mono-nerd-font"
-)
+echo "Setting up SketchyBar with Lua configuration..."
 
-install_dependencies() {
-  echo "Installing sketchybar dependencies..."
-
-  for dep in "${SKETCHYBAR_DEPS[@]}"; do
-    if ! brew list "$dep" &> /dev/null; then
-      echo "Installing $dep..."
-      brew install "$dep"
-    else
-      echo "✓ $dep already installed"
-    fi
-  done
-}
-
-install_fonts() {
-  echo "Installing recommended fonts for sketchybar..."
-
-  for font in "${SKETCHYBAR_FONTS[@]}"; do
-    if ! brew list "$font" &> /dev/null; then
-      echo "Installing $font..."
-      brew install "$font"
-    else
-      echo "✓ $font already installed"
-    fi
-  done
-}
-
-start_service() {
-  if command -v brew &> /dev/null; then
-    echo "Starting sketchybar service..."
-    brew services start sketchybar || true
-    echo "✓ sketchybar service started (via brew services)"
+# Install SbarLua (sketchybar Lua bindings)
+install_sbarlua() {
+  if [ -d "$HOME/.local/share/sketchybar_lua" ]; then
+    echo "✓ SbarLua already installed"
+    return
   fi
+
+  echo "Installing SbarLua..."
+  git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua
+  (cd /tmp/SbarLua && make install)
+  rm -rf /tmp/SbarLua
+  echo "✓ SbarLua installed successfully"
+}
+
+# Download sketchybar-app-font
+install_app_font() {
+  if [ -f "$HOME/Library/Fonts/sketchybar-app-font.ttf" ]; then
+    echo "✓ sketchybar-app-font already installed"
+    return
+  fi
+
+  echo "Downloading sketchybar-app-font..."
+  curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf \
+    -o "$HOME/Library/Fonts/sketchybar-app-font.ttf"
+  echo "✓ sketchybar-app-font installed"
+}
+
+# Compile helper binaries (if makefiles exist)
+compile_helpers() {
+  if [ ! -d "$CONFIG_DIR/helpers" ]; then
+    echo "No helpers directory found, skipping compilation"
+    return
+  fi
+
+  echo "Compiling helper binaries..."
+  if [ -f "$CONFIG_DIR/helpers/makefile" ] || [ -f "$CONFIG_DIR/helpers/Makefile" ]; then
+    (cd "$CONFIG_DIR/helpers" && make 2>/dev/null) || echo "ℹ️  Helper compilation skipped (optional)"
+  fi
+}
+
+# Restart sketchybar
+restart_sketchybar() {
+  echo "Restarting SketchyBar..."
+  brew services restart sketchybar 2>/dev/null || sketchybar --reload || true
+  echo "✓ SketchyBar restarted"
 }
 
 validate_config() {
-  local config_file="$HOME/.config/sketchybar/sketchybarrc"
-
-  if [[ ! -f "$config_file" ]]; then
-    echo "⚠️  Config file not found at $config_file"
+  if [[ ! -f "$CONFIG_DIR/sketchybarrc" ]]; then
+    echo "⚠️  Config file not found at $CONFIG_DIR/sketchybarrc"
     echo "   Please ensure config is linked: make link"
     return 1
   fi
-
-  echo "✓ sketchybar config found at $config_file"
+  echo "✓ SketchyBar config found"
 }
 
 main() {
-  echo "Setting up sketchybar..."
-  echo ""
-
   # Ensure sketchybar is installed
-  if ! command -v sketchybar &> /dev/null; then
-    echo "✗ sketchybar not found. Install with: brew install FelixKratz/formulae/sketchybar"
+  if ! command -v sketchybar &>/dev/null; then
+    echo "✗ sketchybar not found. Install with: brew install sketchybar"
     return 1
   fi
 
-  install_dependencies
-  install_fonts
+  install_sbarlua
+  install_app_font
   validate_config
-  start_service
+  compile_helpers
+  restart_sketchybar
 
   echo ""
-  echo "ℹ️  To update sketchybar config after making changes:"
-  echo "   brew services restart sketchybar"
+  echo "✅ SketchyBar setup complete!"
+  echo "Config location: $CONFIG_DIR"
   echo ""
+  echo "ℹ️  To reload config after making changes:"
+  echo "   brew services restart sketchybar"
+  echo "   or: sketchybar --reload"
 }
 
 main "$@"

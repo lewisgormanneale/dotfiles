@@ -19,6 +19,13 @@ brew "starship"           # prompt engine
 brew "atuin"              # synced shell history
 brew "fastfetch"          # system info tool
 
+# Languages & build tooling
+brew "node"               # JS runtime for tooling
+brew "python@3.12"        # Python runtime
+brew "lua"                # scripting language for Neovim and sketchybar
+brew "cmake"              # native builds (treesitter deps)
+brew "pkg-config"         # build helper for deps
+
 # Search, fuzzy, navigation
 brew "ripgrep"            # fast code search (rg)
 brew "fd"                 # modern find (fzf default)
@@ -27,9 +34,11 @@ brew "bat"                # cat with syntax highlighting
 brew "tmux"               # terminal multiplexer
 
 # macOS window management & bar
-cask "nikitabobko/tap/aerospace" # tiling window manager
 brew "sketchybar"         # macOS custom menu bar
-brew "borders"         # macOS custom menu bar
+brew "borders"            # JankyBorders for colored window borders
+cask "nikitabobko/tap/aerospace" # aerospace window manager (no SIP disable needed)
+brew "switchaudio-osx"   # audio device switching for sketchybar
+brew "nowplaying-cli"    # media control for sketchybar
 
 
 # Git & collaboration
@@ -47,13 +56,10 @@ brew "neovim"             # editor
 brew "lua-language-server" # Lua LSP for Neovim config
 brew "stylua"             # Lua formatter
 
-# Languages & build tooling
-brew "node"               # JS runtime for tooling
-brew "python@3.12"        # Python runtime
-brew "lua"                # scripting language for Neovim and sketchybar
-brew "cmake"              # native builds (treesitter deps)
-brew "pkg-config"         # build helper for deps
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font" # primary dev font with glyphs
 cask "font-hack-nerd-font"       # secondary dev font with glyphs, used in sketchybar
+cask "font-sf-mono"             # SF Mono for sketchybar
+cask "font-sf-pro"              # SF Pro for sketchybar text
+cask "sf-symbols"               # SF Symbols for sketchybar icons
