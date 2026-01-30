@@ -1,11 +1,17 @@
 local icons = require("icons")
 local colors = require("colors")
+local settings = require("settings")
 
-local whitelist = { ["Spotify"] = true,
-                    ["Music"] = true    };
+local whitelist = { 
+  ["Spotify"] = true,
+  ["Music"] = true,
+  ["com.apple.Music"] = true,
+  ["com.spotify.client"] = true 
+}
 
 local media_cover = sbar.add("item", {
   position = "right",
+  update_freq = 3,
   background = {
     image = {
       string = "media.artwork",
@@ -57,19 +63,19 @@ sbar.add("item", {
   position = "popup." .. media_cover.name,
   icon = { string = icons.media.back },
   label = { drawing = false },
-  click_script = "nowplaying-cli previous",
+  click_script = "media-control previous-track",
 })
 sbar.add("item", {
   position = "popup." .. media_cover.name,
   icon = { string = icons.media.play_pause },
   label = { drawing = false },
-  click_script = "nowplaying-cli togglePlayPause",
+  click_script = "media-control toggle-play-pause",
 })
 sbar.add("item", {
   position = "popup." .. media_cover.name,
   icon = { string = icons.media.forward },
   label = { drawing = false },
-  click_script = "nowplaying-cli next",
+  click_script = "media-control next-track",
 })
 
 local interrupt = 0
@@ -83,22 +89,53 @@ local function animate_detail(detail)
   end)
 end
 
-media_cover:subscribe("media_change", function(env)
-  if whitelist[env.INFO.app] then
-    local drawing = (env.INFO.state == "playing")
-    media_artist:set({ drawing = drawing, label = env.INFO.artist, })
-    media_title:set({ drawing = drawing, label = env.INFO.title, })
-    media_cover:set({ drawing = drawing })
-
-    if drawing then
-      animate_detail(true)
-      interrupt = interrupt + 1
-      sbar.delay(5, animate_detail)
-    else
-      media_cover:set({ popup = { drawing = false } })
+local function update_media()
+  sbar.exec("media-control get 2>/dev/null", function(result)
+    if not result or type(result) ~= "table" then
+      media_cover:set({ drawing = false })
+      media_artist:set({ drawing = false })
+      media_title:set({ drawing = false })
+      return
     end
-  end
+    
+    -- result is already a parsed Lua table
+    local app = result.bundleIdentifier
+    local playing = result.playing
+    local title = result.title
+    local artist = result.artist
+    
+    if app and whitelist[app] then
+      media_artist:set({ drawing = playing, label = artist or "" })
+      media_title:set({ drawing = playing, label = title or "" })
+      media_cover:set({ drawing = playing })
+
+      if playing then
+        animate_detail(true)
+        interrupt = interrupt + 1
+        sbar.delay(5, animate_detail)
+      else
+        media_cover:set({ popup = { drawing = false } })
+      end
+    else
+      media_cover:set({ drawing = false })
+      media_artist:set({ drawing = false })
+      media_title:set({ drawing = false })
+    end
+  end)
+end
+
+-- Poll for media updates every 3 seconds
+media_cover:subscribe("routine", function(env)
+  update_media()
 end)
+
+-- Also run on front_app_switched to catch app changes
+media_cover:subscribe("front_app_switched", function(env)
+  update_media()
+end)
+
+-- Initial update
+update_media()
 
 media_cover:subscribe("mouse.entered", function(env)
   interrupt = interrupt + 1

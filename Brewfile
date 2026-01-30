@@ -38,7 +38,8 @@ brew "sketchybar"         # macOS custom menu bar
 brew "borders"            # JankyBorders for colored window borders
 cask "nikitabobko/tap/aerospace" # aerospace window manager (no SIP disable needed)
 brew "switchaudio-osx"   # audio device switching for sketchybar
-brew "nowplaying-cli"    # media control for sketchybar
+tap "ungive/media-control"
+brew "media-control"     # media control for sketchybar (works on macOS 15.4+)
 
 
 # Git & collaboration
