@@ -9,13 +9,16 @@ local whitelist = {
   ["com.spotify.client"] = true 
 }
 
+-- Artwork cache path
+local artwork_path = "/tmp/sketchybar_artwork.jpg"
+
 local media_cover = sbar.add("item", {
   position = "right",
   update_freq = 3,
   background = {
     image = {
-      string = "media.artwork",
-      scale = 0.85,
+      string = artwork_path,
+      scale = 0.04,
     },
     color = colors.transparent,
   },
@@ -79,6 +82,10 @@ sbar.add("item", {
 })
 
 local interrupt = 0
+local last_title = nil
+local last_playing = nil
+local last_artwork = nil
+
 local function animate_detail(detail)
   if (not detail) then interrupt = interrupt - 1 end
   if interrupt > 0 and (not detail) then return end
@@ -92,9 +99,14 @@ end
 local function update_media()
   sbar.exec("media-control get 2>/dev/null", function(result)
     if not result or type(result) ~= "table" then
-      media_cover:set({ drawing = false })
-      media_artist:set({ drawing = false })
-      media_title:set({ drawing = false })
+      if last_playing ~= false then
+        media_cover:set({ drawing = false })
+        media_artist:set({ drawing = false })
+        media_title:set({ drawing = false })
+        last_playing = false
+        last_title = nil
+        last_artwork = nil
+      end
       return
     end
     
@@ -103,23 +115,46 @@ local function update_media()
     local playing = result.playing
     local title = result.title
     local artist = result.artist
+    local artworkData = result.artworkData
+    
+    -- Only update if something actually changed
+    local changed = (title ~= last_title) or (playing ~= last_playing)
     
     if app and whitelist[app] then
-      media_artist:set({ drawing = playing, label = artist or "" })
-      media_title:set({ drawing = playing, label = title or "" })
-      media_cover:set({ drawing = playing })
+      if changed then
+        last_title = title
+        last_playing = playing
+        
+        -- Save artwork if available and changed
+        if artworkData and artworkData ~= last_artwork then
+          last_artwork = artworkData
+          -- Decode base64 and save to file
+          sbar.exec("echo '" .. artworkData .. "' | base64 -d > " .. artwork_path, function()
+            media_cover:set({ background = { image = artwork_path } })
+          end)
+        end
+        
+        media_artist:set({ drawing = playing, label = artist or "" })
+        media_title:set({ drawing = playing, label = title or "" })
+        media_cover:set({ drawing = playing })
 
-      if playing then
-        animate_detail(true)
-        interrupt = interrupt + 1
-        sbar.delay(5, animate_detail)
-      else
-        media_cover:set({ popup = { drawing = false } })
+        if playing then
+          animate_detail(true)
+          interrupt = interrupt + 1
+          sbar.delay(5, animate_detail)
+        else
+          media_cover:set({ popup = { drawing = false } })
+        end
       end
     else
-      media_cover:set({ drawing = false })
-      media_artist:set({ drawing = false })
-      media_title:set({ drawing = false })
+      if last_playing ~= false then
+        media_cover:set({ drawing = false })
+        media_artist:set({ drawing = false })
+        media_title:set({ drawing = false })
+        last_playing = false
+        last_title = nil
+        last_artwork = nil
+      end
     end
   end)
 end
