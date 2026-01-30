@@ -1,5 +1,5 @@
-local colors = require("colors")
 local icons = require("icons")
+local colors = require("colors")
 
 local whitelist = { ["Spotify"] = true,
                     ["Music"] = true    };
@@ -74,55 +74,35 @@ sbar.add("item", {
 
 local interrupt = 0
 local function animate_detail(detail)
-  if detail == false then
-    interrupt = interrupt - 1
-    if interrupt == 0 then
-      sbar.animate("tanh", 30, function()
-        media_artist:set({ label = { width = 0 } })
-        media_title:set({ label = { width = 0 } })
-      end)
-    end
-    return
-  end
+  if (not detail) then interrupt = interrupt - 1 end
+  if interrupt > 0 and (not detail) then return end
 
-  interrupt = interrupt + 1
   sbar.animate("tanh", 30, function()
-    media_artist:set({ label = { width = "dynamic" } })
-    media_title:set({ label = { width = "dynamic" } })
+    media_artist:set({ label = { width = detail and "dynamic" or 0 } })
+    media_title:set({ label = { width = detail and "dynamic" or 0 } })
   end)
 end
 
 media_cover:subscribe("media_change", function(env)
   if whitelist[env.INFO.app] then
     local drawing = (env.INFO.state == "playing")
-    media_artist:set({ drawing = drawing, label = env.INFO.artist })
-    media_title:set({ drawing = drawing, label = env.INFO.title })
+    media_artist:set({ drawing = drawing, label = env.INFO.artist, })
+    media_title:set({ drawing = drawing, label = env.INFO.title, })
     media_cover:set({ drawing = drawing })
+
+    if drawing then
+      animate_detail(true)
+      interrupt = interrupt + 1
+      sbar.delay(5, animate_detail)
+    else
+      media_cover:set({ popup = { drawing = false } })
+    end
   end
 end)
 
-media_title:subscribe("mouse.entered", function(env)
-  animate_detail(true)
-end)
-
-media_artist:subscribe("mouse.entered", function(env)
-  animate_detail(true)
-end)
-
 media_cover:subscribe("mouse.entered", function(env)
+  interrupt = interrupt + 1
   animate_detail(true)
-end)
-
-media_title:subscribe("mouse.exited", function(env)
-  animate_detail(false)
-end)
-
-media_artist:subscribe("mouse.exited", function(env)
-  animate_detail(false)
-end)
-
-media_cover:subscribe("mouse.exited.global", function(env)
-  media_cover:set({ popup = { drawing = false } })
 end)
 
 media_cover:subscribe("mouse.exited", function(env)
@@ -130,5 +110,9 @@ media_cover:subscribe("mouse.exited", function(env)
 end)
 
 media_cover:subscribe("mouse.clicked", function(env)
-  media_cover:set({ popup = { drawing = "toggle" } })
+  media_cover:set({ popup = { drawing = "toggle" }})
+end)
+
+media_title:subscribe("mouse.exited.global", function(env)
+  media_cover:set({ popup = { drawing = false }})
 end)
