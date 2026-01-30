@@ -46,63 +46,53 @@ end
 
 -- Update workspace indicators on aerospace events
 local function update_spaces()
-  sbar.exec("aerospace list-workspaces --monitor all", function(workspaces_output)
-    -- Get focused workspace
-    sbar.exec("aerospace list-workspaces --focused", function(focused_output)
-      local focused = focused_output:match("^%s*(.-)%s*$") -- trim whitespace
+  -- Get focused workspace
+  sbar.exec("aerospace list-workspaces --focused", function(focused_output)
+    local focused = focused_output:match("^%s*(.-)%s*$") -- trim whitespace
 
-      -- Parse workspace list
-      local active_workspaces = {}
-      for ws in workspaces_output:gmatch("[^\r\n]+") do
-        local ws_num = tonumber(ws:match("^%s*(.-)%s*$"))
-        if ws_num then
-          active_workspaces[ws_num] = true
+    -- Update each space indicator
+    for i = 1, 10 do
+      local is_focused = (focused == tostring(i))
+
+      -- Get app icons for this workspace to determine if it has windows
+      sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(windows)
+        local icon_line = ""
+        local seen_apps = {}
+        local has_windows = false
+
+        for app in windows:gmatch('[^\r\n]+') do
+          if app ~= "" and not seen_apps[app] then
+            has_windows = true
+            seen_apps[app] = true
+            local lookup = app_icons[app]
+            local icon = ((lookup == nil) and app_icons["Default"] or lookup)
+            icon_line = icon_line .. " " .. icon
+          end
         end
-      end
-
-      -- Update each space indicator
-      for i = 1, 10 do
-        local has_windows = active_workspaces[i] or false
-        local is_focused = (focused == tostring(i))
 
         -- Only show workspaces with windows or the focused workspace
         if has_windows or is_focused then
-          -- Get app icons for this workspace
-          sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(windows)
-            local icon_line = ""
-            local seen_apps = {}
-
-            for app in windows:gmatch('[^\r\n]+') do
-              if app ~= "" and not seen_apps[app] then
-                seen_apps[app] = true
-                local lookup = app_icons[app]
-                local icon = ((lookup == nil) and app_icons["Default"] or lookup)
-                icon_line = icon_line .. " " .. icon
-              end
-            end
-
-            spaces[i]:set({
-              display = "active",
-              icon = {
-                highlight = is_focused,
-                color = is_focused and colors.blue or colors.white,
-              },
-              label = {
-                string = icon_line,
-                highlight = is_focused,
-              },
-              background = {
-                color = is_focused and colors.bg2 or colors.bg1,
-                border_color = is_focused and colors.blue or colors.bg2,
-              }
-            })
-          end)
+          spaces[i]:set({
+            display = "active",
+            icon = {
+              highlight = is_focused,
+              color = is_focused and colors.blue or colors.white,
+            },
+            label = {
+              string = icon_line,
+              highlight = is_focused,
+            },
+            background = {
+              color = is_focused and colors.bg2 or colors.bg1,
+              border_color = is_focused and colors.blue or colors.bg2,
+            }
+          })
         else
           -- Hide empty, non-focused workspaces
           spaces[i]:set({ display = "off" })
         end
-      end
-    end)
+      end)
+    end
   end)
 end
 
