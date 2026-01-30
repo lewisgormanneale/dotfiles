@@ -49,7 +49,7 @@ cask "copilot-cli"        # GitHub Copilot CLI
 brew "stow"               # symlink manager if needed
 
 # Terminal
-cask "ghostty"
+cask "kitty"
 
 # Neovim
 brew "neovim"             # editor
