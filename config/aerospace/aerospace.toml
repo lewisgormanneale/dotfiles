@@ -13,6 +13,7 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 ]
 
 # Mouse follows focus
+on-focus-changed = ['move-mouse window-lazy-center']
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Gaps between windows
@@ -21,7 +22,7 @@ inner.horizontal = 8
 inner.vertical =   8
 outer.left =       8
 outer.bottom =     8
-outer.top =        48
+outer.top =        38
 outer.right =      8
 
 # Layout mode for new containers
@@ -71,8 +72,9 @@ alt-shift-0 = 'move-node-to-workspace 10'
 alt-shift-f = 'fullscreen'
 alt-shift-space = 'layout floating tiling' # Toggle floating
 
-# Reload config
-alt-shift-c = 'reload-config'
+# Switch monitors
+alt-tab = 'workspace-back-and-forth'
+alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 
 [mode.resize.binding]
 h = 'resize smart -50'
@@ -81,3 +83,26 @@ k = 'resize smart -50'
 l = 'resize smart +50'
 enter = 'mode main'
 esc = 'mode main'
+
+# Application-specific rules
+
+# Floating windows
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.calculator'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.archiveutility'
+run = ['layout floating']

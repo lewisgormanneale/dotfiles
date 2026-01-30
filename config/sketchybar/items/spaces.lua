@@ -5,8 +5,8 @@ local app_icons = require("helpers.app_icons")
 
 local spaces = {}
 
--- Create 10 workspace indicators for aerospace
-for i = 1, 10, 1 do
+-- Create workspace indicators for workspaces 1-10
+for i = 1, 10 do
   local space = sbar.add("item", "space." .. i, {
     icon = {
       font = { family = settings.font.numbers },
@@ -33,28 +33,23 @@ for i = 1, 10, 1 do
       border_color = colors.bg2,
       corner_radius = 6,
     },
-    display = "active",
+    display = "off",
   })
 
   spaces[i] = space
 
   -- Click to switch workspace with aerospace
   space:subscribe("mouse.clicked", function(env)
-    sbar.exec("aerospace workspace " .. tostring(i))
+    sbar.exec("aerospace workspace " .. i)
   end)
 end
 
 -- Update workspace indicators on aerospace events
 local function update_spaces()
-  -- Get focused workspace
   sbar.exec("aerospace list-workspaces --focused", function(focused_output)
-    local focused = focused_output:match("^%s*(.-)%s*$") -- trim whitespace
+    local focused = focused_output:match("^%s*(.-)%s*$") or ""
 
-    -- Update each space indicator
     for i = 1, 10 do
-      local is_focused = (focused == tostring(i))
-
-      -- Get app icons for this workspace to determine if it has windows
       sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(windows)
         local icon_line = ""
         local seen_apps = {}
@@ -70,7 +65,8 @@ local function update_spaces()
           end
         end
 
-        -- Only show workspaces with windows or the focused workspace
+        local is_focused = (focused == tostring(i))
+
         if has_windows or is_focused then
           spaces[i]:set({
             display = "active",
@@ -88,7 +84,6 @@ local function update_spaces()
             }
           })
         else
-          -- Hide empty, non-focused workspaces
           spaces[i]:set({ display = "off" })
         end
       end)
@@ -97,10 +92,22 @@ local function update_spaces()
 end
 
 -- Subscribe to aerospace workspace changes
-sbar.add("item", {
+local workspace_watcher = sbar.add("item", {
   drawing = false,
   updates = true,
-}):subscribe("aerospace_workspace_change", function(env)
+})
+
+workspace_watcher:subscribe("aerospace_workspace_change", function(env)
+  update_spaces()
+end)
+
+-- Also subscribe to forced update events
+workspace_watcher:subscribe("forced", function(env)
+  update_spaces()
+end)
+
+-- Periodic refresh every 2 seconds to catch missed events
+workspace_watcher:subscribe("routine", function(env)
   update_spaces()
 end)
 
