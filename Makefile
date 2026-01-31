@@ -7,7 +7,7 @@ bootstrap: ## Install package manager + brew bundle + link configs + postinstall
 	./scripts/link
 	./scripts/postinstall
 
-link: ## Symlink dotfiles via stow (idempotent)
+link: ## Symlink dotfiles (idempotent)
 	./scripts/link
 
 postinstall: ## Mac defaults, fonts, shell

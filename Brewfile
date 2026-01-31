@@ -47,7 +47,6 @@ brew "git"                # version control
 brew "lazygit"            # TUI git helper
 brew "gh"                 # GitHub CLI
 cask "copilot-cli"        # GitHub Copilot CLI
-brew "stow"               # symlink manager if needed
 
 # Terminal
 cask "kitty"
