@@ -8,11 +8,6 @@ local icons = {
     gear = "􀍟",
     cpu = "􀫥",
     clipboard = "􀉄",
-
-    switch = {
-      on = "􁏮",
-      off = "􁏯",
-    },
     volume = {
       _100="􀊩",
       _66="􀊧",
@@ -51,10 +46,6 @@ local icons = {
     cpu = "",
     clipboard = "Missing Icon",
 
-    switch = {
-      on = "󱨥",
-      off = "󱨦",
-    },
     volume = {
       _100="",
       _66="",

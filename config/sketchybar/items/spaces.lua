@@ -34,7 +34,6 @@ for i = 1, 9, 1 do
       height = 26,
       border_color = colors.black,
     },
-    popup = { background = { border_width = 5, border_color = colors.black } }
   })
 
   spaces[i] = space
@@ -52,47 +51,12 @@ for i = 1, 9, 1 do
 
   -- Padding space
   sbar.add("item", "space.padding." .. i, {
-    script = "",
     width = settings.group_paddings,
   })
 
-  local space_popup = sbar.add("item", {
-    position = "popup." .. space.name,
-    padding_left = 5,
-    padding_right = 0,
-    background = {
-      drawing = true,
-      image = {
-        corner_radius = 9,
-        scale = 0.2
-      }
-    }
-  })
-
-  space:subscribe("aerospace_workspace_change", function(env)
-    local focused_workspace = env.FOCUSED_WORKSPACE or env.AEROSPACE_FOCUSED_WORKSPACE
-    local selected = focused_workspace == tostring(i)
-    space:set({
-      icon = { highlight = selected },
-      label = { highlight = selected },
-      background = { border_color = selected and colors.black or colors.bg2 }
-    })
-    space_bracket:set({
-      background = { border_color = selected and colors.grey or colors.bg2 }
-    })
-  end)
-
+  -- Click to switch workspace
   space:subscribe("mouse.clicked", function(env)
-    if env.BUTTON == "other" then
-      space_popup:set({ background = { image = "space." .. i } })
-      space:set({ popup = { drawing = "toggle" } })
-    else
-      sbar.exec("aerospace workspace " .. i)
-    end
-  end)
-
-  space:subscribe("mouse.exited", function(_)
-    space:set({ popup = { drawing = false } })
+    sbar.exec("aerospace workspace " .. i)
   end)
 end
 
@@ -142,10 +106,10 @@ local function update_spaces()
             local should_show = has_windows or (visible_workspaces[i] == true)
             if should_show == nil then should_show = false end
 
-            -- Border colors:
-            -- Pink for focused workspace (like JankyBorders)
-            -- Lavender for other visible workspaces
-            -- bg2 for workspaces with windows but not visible
+            -- Styling based on state:
+            -- Focused workspace: pink border, highlighted text
+            -- Other visible workspace: lavender border
+            -- Workspaces with windows but not visible: bg2 border
             local is_focused = (i == focused_workspace)
             local is_monitor_visible = visible_workspaces[i] == true
             local border_color = colors.bg2
@@ -156,7 +120,8 @@ local function update_spaces()
             end
 
             spaces[i]:set({
-              label = icon_line,
+              icon = { highlight = is_focused },
+              label = { string = icon_line, highlight = is_focused },
               drawing = should_show,
               background = { border_color = border_color }
             })
