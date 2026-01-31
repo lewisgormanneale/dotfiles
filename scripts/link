@@ -36,7 +36,7 @@ main() {
   mkdir -p "$BIN_TARGET"
 
   # Core configs
-  for dir in zsh git starship tmux ghostty nvim aerospace sketchybar; do
+  for dir in zsh git starship tmux kitty nvim aerospace sketchybar; do
     [[ -d "$DOTROOT/config/$dir" ]] && link_config_dir "$dir"
   done
 
