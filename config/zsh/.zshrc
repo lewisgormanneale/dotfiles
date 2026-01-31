@@ -79,3 +79,8 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # Load custom functions & aliases -----------------------------------------
 for file in "${XDG_CONFIG_HOME}/zsh/aliases.d/"*.zsh(N); do source "$file"; done
 for file in "${XDG_CONFIG_HOME}/zsh/functions.d/"*.zsh(N); do source "$file"; done
+
+# Starship in VSCode terminal fix ------------------------------------------
+if [[ -z "$VSCODE_TERMINAL" ]]; then
+    eval "$(starship init zsh)"
+fi

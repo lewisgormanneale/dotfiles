@@ -5,10 +5,12 @@ local app_icons = require("helpers.app_icons")
 
 -- Custom event for aerospace workspace changes
 sbar.add("event", "aerospace_workspace_change")
+sbar.add("event", "aerospace_monitor_change")
 
 local spaces = {}
+local space_brackets = {}
 
-for i = 1, 10, 1 do
+for i = 1, 9, 1 do
   local space = sbar.add("item", "space." .. i, {
     icon = {
       font = { family = settings.font.numbers },
@@ -39,7 +41,7 @@ for i = 1, 10, 1 do
   spaces[i] = space
 
   -- Single item bracket for space items to achieve double border on highlight
-  local space_bracket = sbar.add("bracket", { space.name }, {
+  local space_bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
     background = {
       color = colors.transparent,
       border_color = colors.bg2,
@@ -47,6 +49,7 @@ for i = 1, 10, 1 do
       border_width = 2
     }
   })
+  space_brackets[i] = space_bracket
 
   -- Padding space
   sbar.add("item", "space.padding." .. i, {
@@ -121,32 +124,57 @@ local spaces_indicator = sbar.add("item", {
   }
 })
 
--- Update spaces with app icons using aerospace
+-- Update spaces with app icons and visibility using aerospace
 local function update_spaces()
-  for i = 1, 10, 1 do
-    sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(result)
-      local icon_line = ""
-      local no_app = true
-      if result and result ~= "" then
-        for app in result:gmatch("[^\r\n]+") do
-          no_app = false
-          local lookup = app_icons[app]
-          local icon = ((lookup == nil) and app_icons["Default"] or lookup)
-          icon_line = icon_line .. icon
-        end
+  -- First, get which workspaces are currently visible on monitors
+  sbar.exec("aerospace list-workspaces --monitor 1 --visible", function(mon1_ws)
+    sbar.exec("aerospace list-workspaces --monitor 2 --visible", function(mon2_ws)
+      local visible_workspaces = {}
+      if mon1_ws and mon1_ws ~= "" then
+        local ws = tonumber(mon1_ws:match("^(%d+)"))
+        if ws then visible_workspaces[ws] = true end
       end
+      if mon2_ws and mon2_ws ~= "" then
+        local ws = tonumber(mon2_ws:match("^(%d+)"))
+        if ws then visible_workspaces[ws] = true end
+      end
+      
+      -- Now update each workspace
+      for i = 1, 9, 1 do
+        sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(result)
+          local icon_line = ""
+          local has_windows = false
+          
+          if result and result ~= "" then
+            for app in result:gmatch("[^\r\n]+") do
+              has_windows = true
+              local lookup = app_icons[app]
+              local icon = ((lookup == nil) and app_icons["Default"] or lookup)
+              icon_line = icon_line .. icon
+            end
+          end
 
-      if no_app then
-        icon_line = " —"
+          if not has_windows then
+            icon_line = " —"
+          end
+          
+          -- Show if has windows OR is currently visible on a monitor
+          local should_show = has_windows or (visible_workspaces[i] == true)
+          if should_show == nil then should_show = false end
+          
+          spaces[i]:set({ 
+            label = icon_line,
+            drawing = should_show
+          })
+          space_brackets[i]:set({ drawing = should_show })
+          sbar.set("space.padding." .. i, { drawing = should_show })
+        end)
       end
-      sbar.animate("tanh", 10, function()
-        spaces[i]:set({ label = icon_line })
-      end)
     end)
-  end
+  end)
 end
 
-space_window_observer:subscribe({ "aerospace_workspace_change", "front_app_switched" }, function(env)
+space_window_observer:subscribe({ "aerospace_workspace_change", "aerospace_monitor_change", "front_app_switched" }, function(env)
   update_spaces()
 end)
 
