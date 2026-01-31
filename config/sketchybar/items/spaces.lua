@@ -126,50 +126,71 @@ local spaces_indicator = sbar.add("item", {
 
 -- Update spaces with app icons and visibility using aerospace
 local function update_spaces()
-  -- First, get which workspaces are currently visible on monitors
-  sbar.exec("aerospace list-workspaces --monitor 1 --visible", function(mon1_ws)
-    sbar.exec("aerospace list-workspaces --monitor 2 --visible", function(mon2_ws)
-      local visible_workspaces = {}
-      if mon1_ws and mon1_ws ~= "" then
-        local ws = tonumber(mon1_ws:match("^(%d+)"))
-        if ws then visible_workspaces[ws] = true end
-      end
-      if mon2_ws and mon2_ws ~= "" then
-        local ws = tonumber(mon2_ws:match("^(%d+)"))
-        if ws then visible_workspaces[ws] = true end
-      end
-      
-      -- Now update each workspace
-      for i = 1, 9, 1 do
-        sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(result)
-          local icon_line = ""
-          local has_windows = false
-          
-          if result and result ~= "" then
-            for app in result:gmatch("[^\r\n]+") do
-              has_windows = true
-              local lookup = app_icons[app]
-              local icon = ((lookup == nil) and app_icons["Default"] or lookup)
-              icon_line = icon_line .. icon
-            end
-          end
+  -- First, get which workspaces are currently visible on monitors AND the focused workspace
+  sbar.exec("aerospace list-workspaces --focused", function(focused_ws)
+    local focused_workspace = tonumber(focused_ws and focused_ws:match("^(%d+)"))
+    
+    sbar.exec("aerospace list-workspaces --monitor 1 --visible", function(mon1_ws)
+      sbar.exec("aerospace list-workspaces --monitor 2 --visible", function(mon2_ws)
+        local visible_workspaces = {}
+        if mon1_ws and mon1_ws ~= "" then
+          local ws = tonumber(mon1_ws:match("^(%d+)"))
+          if ws then visible_workspaces[ws] = true end
+        end
+        if mon2_ws and mon2_ws ~= "" then
+          local ws = tonumber(mon2_ws:match("^(%d+)"))
+          if ws then visible_workspaces[ws] = true end
+        end
 
-          if not has_windows then
-            icon_line = " —"
-          end
-          
-          -- Show if has windows OR is currently visible on a monitor
-          local should_show = has_windows or (visible_workspaces[i] == true)
-          if should_show == nil then should_show = false end
-          
-          spaces[i]:set({ 
-            label = icon_line,
-            drawing = should_show
-          })
-          space_brackets[i]:set({ drawing = should_show })
-          sbar.set("space.padding." .. i, { drawing = should_show })
-        end)
-      end
+        -- Now update each workspace
+        for i = 1, 9, 1 do
+          sbar.exec("aerospace list-windows --workspace " .. i .. " --format '%{app-name}'", function(result)
+            local icon_line = ""
+            local has_windows = false
+
+            if result and result ~= "" then
+              for app in result:gmatch("[^\r\n]+") do
+                has_windows = true
+                local lookup = app_icons[app]
+                local icon = ((lookup == nil) and app_icons["Default"] or lookup)
+                icon_line = icon_line .. icon
+              end
+            end
+
+            if not has_windows then
+              icon_line = " —"
+            end
+
+            -- Show if has windows OR is currently visible on a monitor
+            local should_show = has_windows or (visible_workspaces[i] == true)
+            if should_show == nil then should_show = false end
+            
+            -- Border colors:
+            -- Pink for focused workspace (like JankyBorders)
+            -- Lavender for other visible workspaces
+            -- bg2 for workspaces with windows but not visible
+            local is_focused = (i == focused_workspace)
+            local is_monitor_visible = visible_workspaces[i] == true
+            local border_color = colors.bg2
+            if is_focused then
+              border_color = colors.pink
+            elseif is_monitor_visible then
+              border_color = colors.lavender
+            end
+
+            spaces[i]:set({
+              label = icon_line,
+              drawing = should_show,
+              background = { border_color = border_color }
+            })
+            space_brackets[i]:set({ 
+              drawing = should_show,
+              background = { border_color = border_color }
+            })
+            sbar.set("space.padding." .. i, { drawing = should_show })
+          end)
+        end
+      end)
     end)
   end)
 end
