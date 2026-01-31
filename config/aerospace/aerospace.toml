@@ -8,26 +8,40 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 start-at-login = true
 
 # Notify Sketchybar about AeroSpace workspace changes
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+exec-on-workspace-change = [
+  '/bin/bash',
+  '-c',
+  'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE',
 ]
+
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+automatically-unhide-macos-hidden-apps = true
 
 # Mouse follows focus
 on-focus-changed = ['move-mouse window-lazy-center']
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+[key-mapping]
+preset = 'qwerty'
+
 # Gaps between windows
 [gaps]
 inner.horizontal = 8
-inner.vertical =   8
-outer.left =       8
-outer.bottom =     8
-outer.top =        48
-outer.right =      8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 8
+outer.top = 48
+outer.right = 8
 
 # Layout mode for new containers
 [mode.main.binding]
 # See: https://nikitabobko.github.io/AeroSpace/goodiesaerospacelist-workspaces for workspaces that could be used
+
+# Layout switching
+alt-slash = 'layout tiles horizontal vertical'
+alt-comma = 'layout accordion horizontal vertical'
 
 # Focus windows
 alt-h = 'focus left'
@@ -41,8 +55,9 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
-# Resize mode
-alt-shift-r = 'mode resize'
+# Resize
+alt-shift-minus = 'resize smart -50'
+alt-shift-equal = 'resize smart +50'
 
 # Workspace switching
 alt-1 = 'workspace 1'
@@ -54,19 +69,17 @@ alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
-alt-0 = 'workspace 10'
 
 # Move windows to workspace
-alt-shift-1 = 'move-node-to-workspace 1'
-alt-shift-2 = 'move-node-to-workspace 2'
-alt-shift-3 = 'move-node-to-workspace 3'
-alt-shift-4 = 'move-node-to-workspace 4'
-alt-shift-5 = 'move-node-to-workspace 5'
-alt-shift-6 = 'move-node-to-workspace 6'
-alt-shift-7 = 'move-node-to-workspace 7'
-alt-shift-8 = 'move-node-to-workspace 8'
-alt-shift-9 = 'move-node-to-workspace 9'
-alt-shift-0 = 'move-node-to-workspace 10'
+alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
+alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
+alt-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
+alt-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
+alt-shift-5 = 'move-node-to-workspace 5 --focus-follows-window'
+alt-shift-6 = 'move-node-to-workspace 6 --focus-follows-window'
+alt-shift-7 = 'move-node-to-workspace 7 --focus-follows-window'
+alt-shift-8 = 'move-node-to-workspace 8 --focus-follows-window'
+alt-shift-9 = 'move-node-to-workspace 9 --focus-follows-window'
 
 # Layout changes
 alt-shift-f = 'fullscreen'
@@ -74,15 +87,24 @@ alt-shift-space = 'layout floating tiling' # Toggle floating
 
 # Switch monitors
 alt-tab = 'workspace-back-and-forth'
-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+alt-shift-tab = [
+  'move-workspace-to-monitor --wrap-around next',
+  'exec-and-forget sketchybar --trigger aerospace_monitor_change TARGET_MONITOR=$(aerospace list-monitors --focused --format "%{monitor-appkit-nsscreen-screens-id}") FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)',
+]
 
-[mode.resize.binding]
-h = 'resize smart -50'
-j = 'resize smart +50'
-k = 'resize smart -50'
-l = 'resize smart +50'
-enter = 'mode main'
-esc = 'mode main'
+# See: https://nikitabobko.github.io/AeroSpace/commands#mode
+alt-shift-semicolon = 'mode service'
+
+# 'service' binding mode declaration.
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main'] # reset layout
+f = [
+  'layout floating tiling',
+  'mode main',
+] # Toggle between floating and tiling layout
+backspace = ['close-all-windows-but-current', 'mode main']
 
 # Application-specific rules
 
