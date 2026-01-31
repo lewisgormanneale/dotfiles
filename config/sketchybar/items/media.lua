@@ -6,24 +6,28 @@ local whitelist = {
   ["Spotify"] = true,
   ["Music"] = true,
   ["com.apple.Music"] = true,
-  ["com.spotify.client"] = true
+  ["com.spotify.client"] = true,
+  ["com.apple.WebKit.GPU"] = true, -- Safari/WebKit media
 }
 
--- Artwork cache path
-local artwork_path = "/tmp/sketchybar_artwork.jpg"
+-- Artwork cache path (use counter to bust sketchybar image cache)
+local artwork_counter = 0
+local function get_artwork_path()
+  artwork_counter = (artwork_counter + 1) % 2
+  return "/tmp/sketchybar_artwork_" .. artwork_counter .. ".png"
+end
 
 local media_cover = sbar.add("item", {
   position = "right",
   update_freq = 3,
   background = {
     image = {
-      string = artwork_path,
-      scale = 0.04,
+      scale = 1.0,
     },
     color = colors.transparent,
   },
-  label = { drawing = false },
   icon = { drawing = false },
+  label = { drawing = false },
   drawing = false,
   updates = true,
   popup = {
@@ -117,8 +121,9 @@ local function update_media()
     local artist = result.artist
     local artworkData = result.artworkData
 
-    -- Only update if something actually changed
-    local changed = (title ~= last_title) or (playing ~= last_playing)
+    -- Only update if something actually changed (including artwork)
+    local artwork_changed = artworkData and artworkData ~= last_artwork
+    local changed = (title ~= last_title) or (playing ~= last_playing) or artwork_changed
 
     if app and whitelist[app] then
       if changed then
@@ -126,10 +131,16 @@ local function update_media()
         last_playing = playing
 
         -- Save artwork if available and changed
-        if artworkData and artworkData ~= last_artwork then
+        if artwork_changed then
           last_artwork = artworkData
-          -- Decode base64 and save to file
-          sbar.exec("echo '" .. artworkData .. "' | base64 -d > " .. artwork_path, function()
+          local artwork_path = get_artwork_path()
+          -- Decode base64, crop to square, resize to 28px, and convert to PNG
+          local cmd = "echo '" .. artworkData .. "' | base64 -d > /tmp/sketchybar_artwork_raw && "
+            .. "sips -s format png /tmp/sketchybar_artwork_raw --out " .. artwork_path .. " 2>/dev/null && "
+            .. "SIZE=$(sips -g pixelHeight " .. artwork_path .. " 2>/dev/null | tail -1 | awk '{print $2}') && "
+            .. "sips --cropToHeightWidth $SIZE $SIZE " .. artwork_path .. " 2>/dev/null && "
+            .. "sips --resampleHeight 28 " .. artwork_path .. " 2>/dev/null"
+          sbar.exec(cmd, function()
             media_cover:set({ background = { image = artwork_path } })
           end)
         end
