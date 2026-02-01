@@ -12,7 +12,7 @@ Re-run `make link` after edits. Safe on existing machines: files are backed up w
 
 ## Stack
 
-- Terminal: Ghostty
+- Terminal: Kitty
 - Shell: zsh (+ antidote plugins, starship, fzf, zoxide, atuin, direnv)
 - Editor: Neovim (lazy.nvim, LSP via mason, treesitter, telescope, cmp, catppuccin)
 - Package mgmt: Homebrew (+ Brewfile)
