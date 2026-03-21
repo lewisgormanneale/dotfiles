@@ -1,5 +1,4 @@
-# Custom taps for sketchybar
-tap "FelixKratz/formulae"
+
 
 # Shell & core utilities
 brew "zsh"                # shell (brew-managed, newer than system)
@@ -22,7 +21,7 @@ brew "fastfetch"          # system info tool
 # Languages & build tooling
 brew "node"               # JS runtime for tooling
 brew "python@3.12"        # Python runtime
-brew "lua"                # scripting language for Neovim and sketchybar
+brew "lua"                # scripting language for Neovim
 brew "cmake"              # native builds (treesitter deps)
 brew "pkg-config"         # build helper for deps
 
@@ -33,13 +32,8 @@ brew "fzf"                # fuzzy finder + keybinds
 brew "bat"                # cat with syntax highlighting
 brew "tmux"               # terminal multiplexer
 
-# macOS window management & bar
-brew "sketchybar"         # macOS custom menu bar
-brew "borders"            # JankyBorders for colored window borders
-cask "nikitabobko/tap/aerospace" # aerospace window manager (no SIP disable needed)
-brew "switchaudio-osx"   # audio device switching for sketchybar
-tap "ungive/media-control"
-brew "media-control"     # media control for sketchybar (works on macOS 15.4+)
+# macOS terminal
+cask "kitty"
 
 
 # Git & collaboration
@@ -47,9 +41,6 @@ brew "git"                # version control
 brew "lazygit"            # TUI git helper
 brew "gh"                 # GitHub CLI
 cask "copilot-cli"        # GitHub Copilot CLI
-
-# Terminal
-cask "kitty"
 
 # Neovim
 brew "neovim"             # editor
@@ -60,6 +51,3 @@ brew "stylua"             # Lua formatter
 # Fonts
 cask "font-iosevka-nerd-font"        # Iosevka with Nerd Font glyphs
 cask "font-iosevka-term-nerd-font"   # Iosevka Term (fixed-width for terminals)
-cask "font-sf-mono"                  # SF Mono for sketchybar
-cask "font-sf-pro"                   # SF Pro for sketchybar text
-cask "sf-symbols"                    # SF Symbols for sketchybar icons

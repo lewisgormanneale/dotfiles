@@ -28,9 +28,7 @@ if [[ ! -f "${XDG_CACHE_HOME}/zsh/.zcompdump" ]]; then compinit; else compinit -
 
 # Prompt / theme -----------------------------------------------------------
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
-if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init zsh)"
-fi
+# Starship initialization moved to end of file to allow VS Code terminal detection
 
 # Plugins via Antidote -----------------------------------------------------
 ANTIDOTE_DIR="${XDG_DATA_HOME}/antidote"
@@ -80,7 +78,7 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 for file in "${XDG_CONFIG_HOME}/zsh/aliases.d/"*.zsh(N); do source "$file"; done
 for file in "${XDG_CONFIG_HOME}/zsh/functions.d/"*.zsh(N); do source "$file"; done
 
-# Starship in VSCode terminal fix ------------------------------------------
-if [[ -z "$VSCODE_TERMINAL" ]]; then
-    eval "$(starship init zsh)"
+# Starship prompt (skip in VS Code terminal for Copilot compatibility) -----
+if [[ "$TERM_PROGRAM" != "vscode" ]] && command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
 fi

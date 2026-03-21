@@ -17,14 +17,6 @@ run_macos_defaults() {
   fi
 }
 
-setup_sketchybar() {
-  local sketchybar_script="$DOTROOT/scripts/setup-sketchybar"
-  if is_macos && [[ -x "$sketchybar_script" ]]; then
-    echo ""
-    echo "=== Setting up sketchybar ==="
-    "$sketchybar_script"
-  fi
-}
 
 customize_kitty_icon() {
   if ! is_macos; then
@@ -87,7 +79,6 @@ main() {
   run_macos_defaults
   set_login_shell
   customize_kitty_icon
-  setup_sketchybar
 }
 
 main "$@"
